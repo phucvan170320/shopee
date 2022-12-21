@@ -1,13 +1,11 @@
-// import Haha from './Haha'
-// import Haha from './Haha'
 import './App.css'
-import Haha from './Haha'
+import useRouteElements from './useRouteElements'
 
 function App() {
+  const routeElements = useRouteElements()
   return (
     <>
-      <div className='text-[30px] text-red-500'>hihi</div>
-      <Haha></Haha>
+      <div className='text-[30px] text-red-500'>{routeElements}</div>
     </>
   )
 }
