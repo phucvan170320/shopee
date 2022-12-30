@@ -1,8 +1,8 @@
 import React from 'react'
 import Register from '../../pages/Register/index'
 // import RegisterHeader from 'src/components/RegisterHeader'
-import Footer from 'src/components/Footer'
-import RegisterHeader from 'src/components/RegisterHeader'
+import Footer from '../../components/Footer'
+import RegisterHeader from '../../components/RegisterHeader'
 
 interface Props {
   children?: React.ReactNode

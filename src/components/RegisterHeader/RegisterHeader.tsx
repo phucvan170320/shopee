@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 
 function RegisterHeader() {
   return (
-    <header className='py-5'>
+    <header className='py-5 text-[30px] text-red-500'>
       <div className='mx-auto max-w-7xl px-5'>
         <nav className='flex items-end justify-start '>
           {' '}

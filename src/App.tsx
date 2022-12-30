@@ -5,7 +5,7 @@ function App() {
   const routeElements = useRouteElements()
   return (
     <>
-      <div className='text-[30px] text-red-500'>{routeElements}</div>
+      <div className=''>{routeElements}</div>
     </>
   )
 }
