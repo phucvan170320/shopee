@@ -8,6 +8,12 @@ import { schema, Schema } from '../../utils/rules'
 import * as yup from 'yup'
 // import {} from '@hookform/resolvers/yup'
 import { yupResolver } from '@hookform/resolvers/yup'
+import { useMutation } from '@tanstack/react-query'
+import { registerAccount } from '../../apis/auth.api'
+import { omit } from 'lodash'
+import { isAxiosUnprocessableEntityError } from '../../utils/ultils'
+import { error } from 'console'
+import { ResponseApi } from '../../types/ultil.type'
 
 // interface FormData {
 //   email: string
@@ -19,16 +25,50 @@ function Register() {
   const {
     register,
     handleSubmit,
-    formState: { errors },
-    getValues
+    setError,
+    formState: { errors }
+    // getValues
   } = useForm<FormData>({
     resolver: yupResolver(schema)
   })
-  const rules = getRules(getValues)
-  const onSubmit = handleSubmit((data) => {
-    console.log(data)
+  const registerAccountMutation = useMutation({
+    mutationFn: (body: Omit<FormData, 'confirm_password'>) => registerAccount(body)
   })
-  console.log('errors:', errors)
+  // const rules = getRules(getValues)
+  const onSubmit = handleSubmit((data) => {
+    const body = omit(data, ['confirm_password'])
+    registerAccountMutation.mutate(body, {
+      onSuccess: (data) => {
+        console.log('data:', data)
+      },
+      onError: (error) => {
+        if (isAxiosUnprocessableEntityError<ResponseApi<Omit<FormData, 'confirm_password'>>>(error)) {
+          const formError = error.response?.data.data
+          if (formError) {
+            Object.keys(formError).forEach((key) => {
+              setError(key as keyof Omit<FormData, 'confirm_password'>, {
+                message: formError[key as keyof Omit<FormData, 'confirm_password'>],
+                type: 'Server'
+              })
+            })
+          }
+          // if (formError?.email) {
+          //   setError('email', {
+          //     message: formError.email,
+          //     type: 'Server'
+          //   })
+          // }
+          // if (formError?.password) {
+          //   setError('password', {
+          //     message: formError.password,
+          //     type: 'Server'
+          //   })
+          // }
+        }
+      }
+    })
+  })
+  // console.log('errors:', errors)
   return (
     <div>
       <div className='bg-orange'>
