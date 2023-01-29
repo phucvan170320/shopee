@@ -7,7 +7,7 @@ class Http {
   instance: AxiosInstance
   constructor() {
     this.instance = axios.create({
-      baseURL: 'https://api-ecom.duthanhduoc.com1/',
+      baseURL: 'https://api-ecom.duthanhduoc.com/',
       timeout: 10000,
       headers: {
         'Content-Type': 'application/json',
@@ -25,6 +25,7 @@ class Http {
           const data: any | undefined = error.response?.data
           const message = data?.message || error.message
           toast.error(message)
+          console.log('error:', message)
         }
         return Promise.reject(error)
       }

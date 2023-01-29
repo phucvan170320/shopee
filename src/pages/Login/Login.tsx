@@ -1,9 +1,61 @@
+import { yupResolver } from '@hookform/resolvers/yup'
+import { useMutation } from '@tanstack/react-query'
 import React from 'react'
 import { useForm } from 'react-hook-form'
 import { Link } from 'react-router-dom'
+import { schema, Schema } from '../../utils/rules'
+import { login } from '../../apis/auth.api'
+import { isAxiosUnprocessableEntityError } from '../../utils/ultils'
+import { ResponseApi } from '../../types/ultil.type'
+import Input from '../../components/Input/index'
 
+type FormData = Omit<Schema, 'confirm_password'>
+const loginschema = schema.omit(['confirm_password'])
 function Login() {
-  // const {} = useForm()
+  const {
+    register,
+    handleSubmit,
+    setError,
+    formState: { errors }
+    // getValues
+  } = useForm<FormData>({
+    resolver: yupResolver(loginschema)
+  })
+  const registerAccountMutation = useMutation({
+    mutationFn: (body: FormData) => login(body)
+  })
+  const onSubmit = handleSubmit((data) => {
+    registerAccountMutation.mutate(data, {
+      onSuccess: (data) => {
+        console.log('data:', data)
+      },
+      onError: (error) => {
+        if (isAxiosUnprocessableEntityError<ResponseApi<FormData>>(error)) {
+          const formError = error.response?.data.data
+          if (formError) {
+            Object.keys(formError).forEach((key) => {
+              setError(key as keyof Omit<FormData, 'confirm_password'>, {
+                message: formError[key as keyof FormData],
+                type: 'Server'
+              })
+            })
+          }
+          // if (formError?.email) {
+          //   setError('email', {
+          //     message: formError.email,
+          //     type: 'Server'
+          //   })
+          // }
+          // if (formError?.password) {
+          //   setError('password', {
+          //     message: formError.password,
+          //     type: 'Server'
+          //   })
+          // }
+        }
+      }
+    })
+  })
   return (
     <>
       <div className='bg-orange'>
@@ -11,28 +63,31 @@ function Login() {
           <div className='grid grid-cols-1 py-12 lg:grid-cols-5 lg:py-32'>
             <div className='bg-white p-10 lg:col-span-2 lg:col-start-4'>
               <div className=''>
-                <form action='' className='bg-white p-3 shadow-sm'>
+                <form action='' className='bg-white p-3 shadow-sm' onSubmit={onSubmit} noValidate>
                   <div className='text-2xl'>Dang Nhap</div>
                   <div className='mt-8'>
-                    <input
-                      type='email '
+                    <Input
                       name='email'
+                      type={'email'}
+                      autoComplete='on'
+                      className='mt-8'
                       placeholder='Email'
-                      autoComplete='on'
-                      className='w-full rounded-sm border border-gray-300 
-                    p-3 outline-none focus:border-gray-500 focus:shadow-sm'
+                      errorMessage={errors.email?.message}
+                      register={register}
+                      // rules={rules.email}
                     />
                   </div>
-                  <div className='mt-8'>
-                    <input
-                      type='password'
-                      name='password'
-                      autoComplete='on'
-                      placeholder='password'
-                      className='w-full rounded-sm border border-gray-300 
-                p-3 outline-none focus:border-gray-500 focus:shadow-sm'
-                    />
-                  </div>
+
+                  <Input
+                    name='password'
+                    type='password'
+                    placeholder='password'
+                    autoComplete='on'
+                    className='mt-8'
+                    errorMessage={errors.password?.message}
+                    register={register}
+                    // rules={rules.password}
+                  />
                   <button className='mt-5 w-full rounded-lg bg-[#ee4d2d] py-4 px-2 text-center  uppercase shadow-md hover:bg-[aqua]'>
                     Đăng Nhập
                   </button>
