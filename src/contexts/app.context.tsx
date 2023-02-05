@@ -29,7 +29,7 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
 
   const reset = () => {
     setIsAuthenticated(false)
-    setExtendedPurchases([])
+    // setExtendedPurchases([])
     setProfile(null)
   }
 
