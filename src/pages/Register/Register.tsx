@@ -13,7 +13,7 @@ import { registerAccount } from '../../apis/auth.api'
 import { omit } from 'lodash'
 import { isAxiosUnprocessableEntityError } from '../../utils/ultils'
 import { error } from 'console'
-import { ResponseApi } from '../../types/ultil.type'
+import { ErrorResponse } from '../../types/ultil.type'
 
 // interface FormData {
 //   email: string
@@ -42,7 +42,7 @@ function Register() {
         console.log('data:', data)
       },
       onError: (error) => {
-        if (isAxiosUnprocessableEntityError<ResponseApi<Omit<FormData, 'confirm_password'>>>(error)) {
+        if (isAxiosUnprocessableEntityError<ErrorResponse<Omit<FormData, 'confirm_password'>>>(error)) {
           const formError = error.response?.data.data
           if (formError) {
             Object.keys(formError).forEach((key) => {
@@ -156,7 +156,7 @@ function Register() {
                       {errors.confirm_password?.message}
                     </div>
                   </div> */}
-                  <button className='mt-5 w-full rounded-lg bg-[#ee4d2d] py-4 px-2 text-center  uppercase shadow-md hover:bg-[aqua]'>
+                  <button className='mt-5 w-full rounded-lg border-[blue] bg-[#ee4d2d] py-4 px-2  text-center uppercase shadow-md hover:bg-[red] hover:font-bold'>
                     dang nhap
                   </button>
                   <div className='mt-8'>

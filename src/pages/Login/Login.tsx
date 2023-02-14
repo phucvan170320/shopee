@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom'
 import { schema, Schema } from '../../utils/rules'
 import { login } from '../../apis/auth.api'
 import { isAxiosUnprocessableEntityError } from '../../utils/ultils'
-import { ResponseApi } from '../../types/ultil.type'
+import { ErrorResponse } from '../../types/ultil.type'
 import Input from '../../components/Input/index'
 
 type FormData = Omit<Schema, 'confirm_password'>
@@ -30,7 +30,7 @@ function Login() {
         console.log('data:', data)
       },
       onError: (error) => {
-        if (isAxiosUnprocessableEntityError<ResponseApi<FormData>>(error)) {
+        if (isAxiosUnprocessableEntityError<ErrorResponse<FormData>>(error)) {
           const formError = error.response?.data.data
           if (formError) {
             Object.keys(formError).forEach((key) => {
@@ -88,7 +88,7 @@ function Login() {
                     register={register}
                     // rules={rules.password}
                   />
-                  <button className='mt-5 w-full rounded-lg bg-[#ee4d2d] py-4 px-2 text-center  uppercase shadow-md hover:bg-[aqua]'>
+                  <button className='mt-5 w-full rounded-lg bg-[#ee4d2d] py-4 px-2 text-center  uppercase shadow-md hover:bg-[red] hover:font-bold'>
                     Đăng Nhập
                   </button>
                   <div className='mt-8'>

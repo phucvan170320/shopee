@@ -17,7 +17,7 @@ function Input({ type, placeholder, name, className, register, rules, errorMessa
       <input
         type={type}
         // {...register('email', rules.email)}
-        {...register(name, rules)}
+        {...register(name)}
         placeholder={placeholder}
         className='w-full rounded-sm border border-gray-300 
                     p-3 outline-none focus:border-gray-500 focus:shadow-sm'

@@ -2,10 +2,26 @@ import axios, { AxiosError, type AxiosInstance } from 'axios'
 import HttpStatusCode from 'axios'
 import { isAxiosUnprocessableEntityError } from './ultils'
 import { toast } from 'react-toastify'
+import { config } from 'process'
+import { AuthResponse } from '../types/auth.type'
+import {
+  setAccessTokenToLS,
+  setRefreshTokenToLS,
+  setProfileToLS,
+  clearLS,
+  getAccessTokenFromLS,
+  getRefreshTokenFromLS
+} from './auth'
 
 class Http {
   instance: AxiosInstance
+  private accessToken: string
+  private refreshToken: string
+  private refreshTokenRequest: Promise<string> | null
   constructor() {
+    this.accessToken = getAccessTokenFromLS()
+    this.refreshToken = getRefreshTokenFromLS()
+    this.refreshTokenRequest = null
     this.instance = axios.create({
       baseURL: 'https://api-ecom.duthanhduoc.com/',
       timeout: 10000,
@@ -15,9 +31,33 @@ class Http {
         'expire-refresh-token': 60 * 60 * 24 * 160 // 160 ngày
       }
     })
+    this.instance.interceptors.request.use(
+      (config) => {
+        if (this.accessToken && config.headers) {
+          config.headers.authorization = this.accessToken
+          // config.headers['authorization'] = this.accessToken
+          // config.headers.set('authorization', this.accessToken)
+
+          return config
+        }
+        return config
+      },
+      (error) => {
+        return Promise.reject(error)
+      }
+    )
 
     this.instance.interceptors.response.use(
-      function (response) {
+      (response) => {
+        const { url } = response.config
+        if (url === '/login' || url === '/register') {
+          this.accessToken = (response.data as AuthResponse).data?.access_token
+
+          setAccessTokenToLS(this.accessToken)
+        } else if (url === '/logout ') {
+          this.accessToken = ''
+          clearLS()
+        }
         return response
       },
       function (error: AxiosError) {
