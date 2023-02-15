@@ -1,5 +1,9 @@
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import Popover from '../Popover/Popover'
+import { logout } from '../../apis/auth.api'
+import { useMutation } from '@tanstack/react-query'
+import { useContext } from 'react'
+import { AppContext } from '../../contexts/app.context'
 
 function Header() {
   // const arrowRef = useRef<HTMLElement>(null)
@@ -17,6 +21,17 @@ function Header() {
   // const hover = useHover(context)
 
   // const { getReferenceProps, getFloatingProps } = useInteractions([hover])
+  const { setIsAuthenticated, isAuthenticated } = useContext(AppContext)
+
+  const logoutMutation = useMutation({
+    mutationFn: logout,
+    onSuccess: () => {
+      setIsAuthenticated(false)
+    }
+  })
+  const handleLogout = () => {
+    return logoutMutation.mutate()
+  }
   return (
     <div className='bg-[linear-gradient(-180deg,#f53d2d,#f63)] pb-5 pt-2 text-white'>
       <div className='container'>
@@ -74,7 +89,10 @@ function Header() {
                 <Link to='/' className='block bg-white py-2 px-3 hover:bg-slate-200 hover:text-cyan-600 '>
                   Don Mua
                 </Link>
-                <button className='block w-full bg-white py-2 px-3 text-left hover:bg-slate-100 hover:text-cyan-600 '>
+                <button
+                  onClick={handleLogout}
+                  className='block w-full bg-white py-2 px-3 text-left hover:bg-slate-100 hover:text-cyan-600 '
+                >
                   Dang Xuat
                 </button>
               </div>
@@ -91,6 +109,17 @@ function Header() {
               <div className='ml-6'> vantanvinhphuc </div>
             </div>
           </Popover>
+          {!isAuthenticated && (
+            <div className='flex items-center'>
+              <Link to={'/register'} className='mx-3 capitalize hover:text-white'>
+                Đăng kí
+              </Link>
+              <div className='h-4 border-r-[1px] border-r-white'></div>
+              <Link to={'/login'} className='mx-3 capitalize hover:text-white'>
+                Đăng Nhập
+              </Link>
+            </div>
+          )}
         </div>
         <div className='mt-4 flex grid grid-cols-12 items-end items-center gap-4 '>
           <Link to='/' className='col-span-2'>

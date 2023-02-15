@@ -1,4 +1,4 @@
-import axios, { AxiosError, type AxiosInstance, type RawAxiosRequestHeaders } from 'axios'
+import axios, { AxiosError, RawAxiosResponseHeaders, type AxiosInstance, type RawAxiosRequestHeaders } from 'axios'
 import HttpStatusCode from 'axios'
 import { isAxiosUnprocessableEntityError } from './ultils'
 import { toast } from 'react-toastify'
@@ -53,7 +53,6 @@ class Http {
         const { url } = response.config
         if (url === '/login' || url === '/register') {
           this.accessToken = (response.data as AuthResponse).data?.access_token
-
           setAccessTokenToLS(this.accessToken)
         } else if (url === '/logout ') {
           this.accessToken = ''
