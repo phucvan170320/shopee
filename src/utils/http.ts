@@ -1,4 +1,4 @@
-import axios, { AxiosError, type AxiosInstance } from 'axios'
+import axios, { AxiosError, type AxiosInstance, type RawAxiosRequestHeaders } from 'axios'
 import HttpStatusCode from 'axios'
 import { isAxiosUnprocessableEntityError } from './ultils'
 import { toast } from 'react-toastify'
@@ -34,7 +34,8 @@ class Http {
     this.instance.interceptors.request.use(
       (config) => {
         if (this.accessToken && config.headers) {
-          config.headers.authorization = this.accessToken
+          ;(config.headers as RawAxiosRequestHeaders).authorization = this.accessToken
+
           // config.headers['authorization'] = this.accessToken
           // config.headers.set('authorization', this.accessToken)
 
