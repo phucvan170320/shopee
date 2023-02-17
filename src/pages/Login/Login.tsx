@@ -4,11 +4,13 @@ import React, { useContext } from 'react'
 import { useForm } from 'react-hook-form'
 import { Link, useNavigate } from 'react-router-dom'
 import { schema, Schema } from '../../utils/rules'
-import { login } from '../../apis/auth.api'
+// import { login } from '../../apis/auth.api'
 import { isAxiosUnprocessableEntityError } from '../../utils/ultils'
 import { ErrorResponse } from '../../types/ultil.type'
 import Input from '../../components/Input/index'
 import { AppContext } from '../../contexts/app.context'
+import Button from '../../components/Button/Button'
+import authApi from '../../apis/auth.api'
 
 type FormData = Omit<Schema, 'confirm_password'>
 const loginschema = schema.omit(['confirm_password'])
@@ -26,11 +28,14 @@ function Login() {
     resolver: yupResolver(loginschema)
   })
   const registerAccountMutation = useMutation({
-    mutationFn: (body: FormData) => login(body)
+    mutationFn: (body: FormData) => authApi.login(body)
+  })
+  const loginMutation = useMutation({
+    mutationFn: (body: Omit<FormData, 'confirm_password'>) => authApi.login(body)
   })
   const onSubmit = handleSubmit((data) => {
     registerAccountMutation.mutate(data, {
-      onSuccess: (data) => {
+      onSuccess: () => {
         setIsAuthenticated(true)
         navigate('/')
       },
@@ -93,9 +98,13 @@ function Login() {
                     register={register}
                     // rules={rules.password}
                   />
-                  <button className='mt-5 w-full rounded-lg bg-[#ee4d2d] py-4 px-2 text-center  uppercase shadow-md hover:bg-[red] hover:font-bold'>
+                  <Button
+                    isLoading={loginMutation.isLoading}
+                    disabled={loginMutation.isLoading}
+                    className='mt-5 flex w-full items-center justify-center rounded-lg bg-[#ee4d2d]  py-4 px-2 text-center uppercase shadow-md hover:bg-[red] hover:font-bold'
+                  >
                     Đăng Nhập
-                  </button>
+                  </Button>
                   <div className='mt-8'>
                     <div className='flex items-center justify-between font-[700]'>
                       <span className='text-gray-500'>Bạn chưa có tài khoản ?</span>

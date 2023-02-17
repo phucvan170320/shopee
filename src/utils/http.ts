@@ -51,10 +51,13 @@ class Http {
     this.instance.interceptors.response.use(
       (response) => {
         const { url } = response.config
-        if (url === '/login' || url === '/register') {
+        console.log(url)
+
+        if (url === 'login' || url === 'register') {
           this.accessToken = (response.data as AuthResponse).data?.access_token
           setAccessTokenToLS(this.accessToken)
-        } else if (url === '/logout ') {
+        } else if (url === 'logout ') {
+          console.log('helo')
           this.accessToken = ''
           clearLS()
         }
@@ -64,7 +67,7 @@ class Http {
         if (error.response?.status !== HttpStatusCode.HttpStatusCode.UnprocessableEntity) {
           const data: any | undefined = error.response?.data
           const message = data?.message || error.message
-          toast.error(message)
+          // toast.error(message)
           console.log('error:', message)
         }
         return Promise.reject(error)

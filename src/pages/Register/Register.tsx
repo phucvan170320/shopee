@@ -9,12 +9,14 @@ import * as yup from 'yup'
 // import {} from '@hookform/resolvers/yup'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { useMutation } from '@tanstack/react-query'
-import { registerAccount } from '../../apis/auth.api'
+// import { registerAccount } from '../../apis/auth.api'
 import { omit } from 'lodash'
 import { isAxiosUnprocessableEntityError } from '../../utils/ultils'
 import { error } from 'console'
 import { ErrorResponse } from '../../types/ultil.type'
 import { AppContext } from '../../contexts/app.context'
+import authApi from '../../apis/auth.api'
+import Button from '../../components/Button/Button'
 
 // interface FormData {
 //   email: string
@@ -35,13 +37,13 @@ function Register() {
     resolver: yupResolver(schema)
   })
   const registerAccountMutation = useMutation({
-    mutationFn: (body: Omit<FormData, 'confirm_password'>) => registerAccount(body)
+    mutationFn: (body: Omit<FormData, 'confirm_password'>) => authApi.registerAccount(body)
   })
   // const rules = getRules(getValues)
   const onSubmit = handleSubmit((data) => {
     const body = omit(data, ['confirm_password'])
     registerAccountMutation.mutate(body, {
-      onSuccess: (data) => {
+      onSuccess: () => {
         setIsAuthenticated(true)
         navigate('/')
       },
@@ -73,6 +75,7 @@ function Register() {
     })
   })
   // console.log('errors:', errors)
+
   return (
     <div>
       <div className='bg-orange'>
@@ -160,9 +163,13 @@ function Register() {
                       {errors.confirm_password?.message}
                     </div>
                   </div> */}
-                  <button className='mt-5 w-full rounded-lg border-[blue] bg-[#ee4d2d] py-4 px-2  text-center uppercase shadow-md hover:bg-[red] hover:font-bold'>
-                    dang nhap
-                  </button>
+                  <Button
+                    isLoading={registerAccountMutation.isLoading}
+                    disabled={registerAccountMutation.isLoading}
+                    className='fflex mt-5 w-full items-center justify-center rounded-lg border-[blue]  bg-[#ee4d2d] py-4 px-2 uppercase shadow-md hover:bg-[red] hover:font-bold'
+                  >
+                    đăng ký
+                  </Button>
                   <div className='mt-8'>
                     <div className='flex items-center justify-between font-[700]'>
                       <span className='text-gray-500'>Bạn đã có tài khoản ?</span>

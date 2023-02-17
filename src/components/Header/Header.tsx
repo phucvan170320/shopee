@@ -1,9 +1,11 @@
 import { Link, useNavigate } from 'react-router-dom'
 import Popover from '../Popover/Popover'
-import { logout } from '../../apis/auth.api'
+
 import { useMutation } from '@tanstack/react-query'
 import { useContext } from 'react'
 import { AppContext } from '../../contexts/app.context'
+import authApi from '../../apis/auth.api'
+import path from '../../constants/path'
 
 function Header() {
   // const arrowRef = useRef<HTMLElement>(null)
@@ -24,7 +26,7 @@ function Header() {
   const { setIsAuthenticated, isAuthenticated } = useContext(AppContext)
 
   const logoutMutation = useMutation({
-    mutationFn: logout,
+    mutationFn: authApi.logout,
     onSuccess: () => {
       setIsAuthenticated(false)
     }
@@ -78,44 +80,46 @@ function Header() {
           >
             <path strokeLinecap='round' strokeLinejoin='round' d='M19.5 8.25l-7.5 7.5-7.5-7.5' />
           </svg>
-          <Popover
-            placement='bottom-end'
-            className='flex  items-center justify-center'
-            renderPopover={
-              <div>
-                <Link to='/' className='block bg-white py-2 px-3 hover:bg-slate-200 hover:text-cyan-600 '>
-                  Tai Khoan Cua toi
-                </Link>
-                <Link to='/' className='block bg-white py-2 px-3 hover:bg-slate-200 hover:text-cyan-600 '>
-                  Don Mua
-                </Link>
-                <button
-                  onClick={handleLogout}
-                  className='block w-full bg-white py-2 px-3 text-left hover:bg-slate-100 hover:text-cyan-600 '
-                >
-                  Dang Xuat
-                </button>
+          {isAuthenticated && (
+            <Popover
+              placement='bottom-end'
+              className='flex  items-center justify-center'
+              renderPopover={
+                <div>
+                  <Link to={path.profile} className='block bg-white py-2 px-3 hover:bg-slate-200 hover:text-cyan-600 '>
+                    Tai Khoan Cua toi
+                  </Link>
+                  <Link to='/' className='block bg-white py-2 px-3 hover:bg-slate-200 hover:text-cyan-600 '>
+                    Don Mua
+                  </Link>
+                  <button
+                    onClick={handleLogout}
+                    className='block w-full bg-white py-2 px-3 text-left hover:bg-slate-100 hover:text-cyan-600 '
+                  >
+                    Dang Xuat
+                  </button>
+                </div>
+              }
+            >
+              <div className='ml-2 flex items-center'>
+                <div className='mr-2 flex h-7 w-7 flex-shrink-0 '>
+                  <img
+                    src='	https://lh3.googleusercontent.com/ogw/AOh-ky0mhdf8FNWQOkGvUCgRwY9Mp31amZU_iUBzgqKx9w=s32-c-mo'
+                    alt='avatar'
+                    className='h-full w-full rounded-full object-cover'
+                  />
+                </div>
+                <div className='ml-6'> vantanvinhphuc </div>
               </div>
-            }
-          >
-            <div className='ml-2 flex items-center'>
-              <div className='mr-2 flex h-7 w-7 flex-shrink-0 '>
-                <img
-                  src='	https://lh3.googleusercontent.com/ogw/AOh-ky0mhdf8FNWQOkGvUCgRwY9Mp31amZU_iUBzgqKx9w=s32-c-mo'
-                  alt='avatar'
-                  className='h-full w-full rounded-full object-cover'
-                />
-              </div>
-              <div className='ml-6'> vantanvinhphuc </div>
-            </div>
-          </Popover>
+            </Popover>
+          )}
           {!isAuthenticated && (
             <div className='flex items-center'>
-              <Link to={'/register'} className='mx-3 capitalize hover:text-white'>
+              <Link to={path.register} className='mx-3 capitalize hover:text-white'>
                 Đăng kí
               </Link>
               <div className='h-4 border-r-[1px] border-r-white'></div>
-              <Link to={'/login'} className='mx-3 capitalize hover:text-white'>
+              <Link to={path.login} className='mx-3 capitalize hover:text-white'>
                 Đăng Nhập
               </Link>
             </div>
