@@ -16,7 +16,7 @@ type FormData = Omit<Schema, 'confirm_password'>
 const loginschema = schema.omit(['confirm_password'])
 
 function Login() {
-  const { setIsAuthenticated } = useContext(AppContext)
+  const { setIsAuthenticated, setProfile } = useContext(AppContext)
   const navigate = useNavigate()
   const {
     register,
@@ -35,8 +35,9 @@ function Login() {
   })
   const onSubmit = handleSubmit((data) => {
     registerAccountMutation.mutate(data, {
-      onSuccess: () => {
+      onSuccess: (data) => {
         setIsAuthenticated(true)
+        setProfile(data.data.data.user)
         navigate('/')
       },
       onError: (error) => {

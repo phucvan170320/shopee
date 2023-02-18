@@ -56,10 +56,16 @@ class Http {
         console.log(url)
 
         if (url === path.login || url === path.register) {
-          this.accessToken = (response.data as AuthResponse).data?.access_token
+          const data = response.data as AuthResponse
+          this.accessToken = data.data.access_token
+          this.refreshToken = data.data.refresh_token
+
           setAccessTokenToLS(this.accessToken)
+          setRefreshTokenToLS(this.refreshToken)
+          setProfileToLS(data.data.user)
         } else if (url === path.logout) {
           this.accessToken = ''
+          this.refreshToken = ''
           clearLS()
         }
         return response

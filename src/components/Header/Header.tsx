@@ -6,6 +6,7 @@ import { useContext } from 'react'
 import { AppContext } from '../../contexts/app.context'
 import authApi from '../../apis/auth.api'
 import path from '../../constants/path'
+import { profile } from 'console'
 
 function Header() {
   // const arrowRef = useRef<HTMLElement>(null)
@@ -23,12 +24,13 @@ function Header() {
   // const hover = useHover(context)
 
   // const { getReferenceProps, getFloatingProps } = useInteractions([hover])
-  const { setIsAuthenticated, isAuthenticated } = useContext(AppContext)
+  const { setIsAuthenticated, isAuthenticated, setProfile, profile } = useContext(AppContext)
 
   const logoutMutation = useMutation({
     mutationFn: authApi.logout,
     onSuccess: () => {
       setIsAuthenticated(false)
+      setProfile(null)
     }
   })
   const handleLogout = () => {
@@ -109,7 +111,7 @@ function Header() {
                     className='h-full w-full rounded-full object-cover'
                   />
                 </div>
-                <div className='ml-6'> vantanvinhphuc </div>
+                <div className='ml-6'> {profile?.email} </div>
               </div>
             </Popover>
           )}
