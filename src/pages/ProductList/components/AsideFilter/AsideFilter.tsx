@@ -1,10 +1,12 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import path from '../../../../constants/path'
+import Input from 'src/components/Input'
+import Button from 'src/components/Button'
 
 function AsideFilter() {
   return (
-    <div className='gap-2 py-4'>
+    <div className='mx-1 gap-2 py-5'>
       <Link to={path.home} className='ml-3 flex items-center font-bold'>
         <svg viewBox='0 0 12 10' className='mr-3 h-4 w-3 fill-current'>
           <g fillRule='evenodd' stroke='none' strokeWidth={1}>
@@ -69,10 +71,48 @@ function AsideFilter() {
         </svg>
         Bo loc tim kiem
       </Link>
-      <div className='my-5'>Khoan gia</div>
+      <div className='my-5'>Khoản giá</div>
       <form action='' className='mt-2'>
-        <div className='flex items-center '></div>
+        <div className='flex items-start '>
+          <Input
+            placeholder='from Đ'
+            type='text'
+            className='grow'
+            name='from'
+            classNameInput='w-full rounded-sm border border-gray-300  p-1 outline-none focus:border-gray-500 focus:shadow-sm'
+          />
+          <div className=' mx-2 mt-2 shrink-0'> --- </div>
+          <Input
+            placeholder='to - Đ'
+            type='text'
+            className='grow'
+            name='from'
+            classNameInput='w-full rounded-sm border border-gray-300  p-1 outline-none focus:border-gray-500 focus:shadow-sm'
+          />
+        </div>
+        <Button className='flex w-full items-center justify-center rounded-xl bg-orange p-2 text-sm uppercase text-white hover:bg-[red]'>
+          Áp dụng
+        </Button>
       </form>
+      <div className='my-4 h-[1px] bg-gray-300' />
+      <div className='text-sm'>Đánh giá</div>
+      <ul className='my-3'>
+        <li className='py-1 pl-2'>
+          <Link to={path.home} className='flex items-center text-sm '>
+            {Array(5)
+              .fill(0)
+              .map((_, index) => (
+                <div key={index} className='p-1'>
+                  helo
+                </div>
+              ))}
+          </Link>
+        </li>
+      </ul>
+      <div className='my-4 h-[1px] bg-gray-300' />
+      <Button className='w-full rounded-xl bg-orange py-2 px-2 text-sm uppercase text-white hover:bg-[red]'>
+        Xóa tất cả
+      </Button>
     </div>
   )
 }

@@ -4,7 +4,7 @@ import { isAxiosUnprocessableEntityError } from './ultils'
 import { toast } from 'react-toastify'
 import { config } from 'process'
 import { AuthResponse } from '../types/auth.type'
-import { login } from '../apis/auth.api'
+// import { login } from '../apis/auth.api'
 import path from '../constants/path'
 import {
   setAccessTokenToLS,
@@ -59,13 +59,14 @@ class Http {
           const data = response.data as AuthResponse
           this.accessToken = data.data.access_token
           this.refreshToken = data.data.refresh_token
-
+          console.log(this.accessToken)
           setAccessTokenToLS(this.accessToken)
           setRefreshTokenToLS(this.refreshToken)
           setProfileToLS(data.data.user)
         } else if (url === path.logout) {
           this.accessToken = ''
           this.refreshToken = ''
+          console.log('helo2')
           clearLS()
         }
         return response
