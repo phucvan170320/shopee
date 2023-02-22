@@ -11,6 +11,7 @@ import { useState } from 'react'
 import useQueryConfig from '../../hooks/useQueryConfig'
 import { ProductListConfig } from '../../types/product.type'
 // import SortProductList from './components/SortProductList/SortProductList'
+import categoryApi from '../../apis/category.api'
 
 function ProductList() {
   const queryConfig = useQueryConfig()
@@ -31,17 +32,29 @@ function ProductList() {
     queryKey: ['products', queryConfig],
     queryFn: () => {
       return productApi.getProducts(queryConfig as ProductListConfig)
-    }
+    },
+    keepPreviousData: true
   })
   console.log('datta:', productsData)
   // const [page, setPage] = useState(1)
+  // export interface Category {
+  //   _id: string
+  //   name: string
+  // }
+  const { data: categoryData } = useQuery({
+    queryKey: ['category'],
+    queryFn: () => {
+      return categoryApi.getCategories()
+    }
+  })
+  console.log('categoryApi:', categoryData)
   return (
     <div className='bg-gray-200 py-6'>
       <div className='container '>
         {productsData && (
           <div className='grid grid-cols-12 gap-6'>
             <div className='col-span-3'>
-              <AsideFilter />
+              <AsideFilter categories={categoryData?.data.data || []} queryConfig={queryConfig} />
             </div>
             <div className='col-span-9'>
               <SortProductList queryConfig={queryConfig} pageSize={productsData.data.data.pagination.page_size} />

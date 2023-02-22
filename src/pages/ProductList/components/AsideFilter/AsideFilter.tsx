@@ -1,13 +1,47 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
+import { Link, createSearchParams } from 'react-router-dom'
 import path from '../../../../constants/path'
+// eslint-disable-next-line import/no-unresolved
 import Input from 'src/components/Input'
+// eslint-disable-next-line import/no-unresolved
 import Button from 'src/components/Button'
 
-function AsideFilter() {
+import { Schema } from '../../../../utils/rules'
+import { QueryConfig } from '../../../../hooks/useQueryConfig'
+import { Category } from '../../../../types/category.type'
+import categoryApi from '../../../../apis/category.api'
+import classNames from 'classnames'
+
+interface Props {
+  queryConfig: QueryConfig
+  categories: Category[]
+}
+// export interface Category {
+//   _id: string
+//   name: string
+// }
+// type QueryConfig = {
+//   page?: string | undefined
+//   limit?: string | undefined
+//   sort_by?: string | undefined
+//   order?: string | undefined
+//   exclude?: string | undefined
+//   rating_filter?: string | undefined
+//   price_max?: string | undefined
+//   price_min?: string | undefined
+//   name?: string | undefined
+//   category?: string | undefined
+// }
+function AsideFilter({ categories, queryConfig }: Props) {
+  const { category } = queryConfig
   return (
     <div className='mx-1 gap-2 py-5'>
-      <Link to={path.home} className='ml-3 flex items-center font-bold'>
+      <Link
+        to={path.home}
+        className={classNames('flex items-center font-bold capitalize', {
+          'text-orange': !category
+        })}
+      >
         <svg viewBox='0 0 12 10' className='mr-3 h-4 w-3 fill-current'>
           <g fillRule='evenodd' stroke='none' strokeWidth={1}>
             <g transform='translate(-373 -208)'>
@@ -21,34 +55,38 @@ function AsideFilter() {
             </g>
           </g>
         </svg>
-        Tat ca danh muc
+        Tất cả danh mục
       </Link>
       <div className='my-4 h-[1px] bg-gray-300' />
       <ul>
-        <li className='py-2 pl-2'>
-          <Link to={path.home} className='relative px-2 font-semibold text-orange'>
-            <svg viewBox='0 0 4 7' className='absolute top-1 left-[-10px] h-2 w-2 fill-orange'>
-              <polygon points='4 3.5 0 0 0 7' />
-            </svg>
-            Thoi trang nam
-          </Link>
-        </li>
-        <li className='py-2 pl-2'>
-          <Link to={path.home} className='relative px-2 font-semibold text-orange'>
-            <svg viewBox='0 0 4 7' className='absolute top-1 left-[-10px] h-2 w-2 fill-orange'>
-              <polygon points='4 3.5 0 0 0 7' />
-            </svg>
-            dien thoai
-          </Link>
-        </li>
-        <li className='py-2 pl-2'>
-          <Link to={path.home} className='relative px-2 font-semibold text-orange'>
-            <svg viewBox='0 0 4 7' className='absolute top-1 left-[-10px] h-2 w-2 fill-orange'>
-              <polygon points='4 3.5 0 0 0 7' />
-            </svg>
-            laptop
-          </Link>
-        </li>
+        {categories.map((categoryItem) => {
+          const isActive = category === categoryItem._id
+          //category : lấy từ api
+          //categoryItem._id : lấy từ URL
+          return (
+            <li key={categoryItem._id} className='py-2 pl-2'>
+              <Link
+                to={{
+                  pathname: path.home,
+                  search: createSearchParams({
+                    ...queryConfig,
+                    category: categoryItem._id
+                  }).toString()
+                }}
+                className={classNames('relative px-2', {
+                  'font-semibold text-orange': isActive
+                })}
+              >
+                {isActive && (
+                  <svg viewBox='0 0 4 7' className='absolute top-1 left-[-10px] h-2 w-2 fill-orange'>
+                    <polygon points='4 3.5 0 0 0 7' />
+                  </svg>
+                )}
+                {categoryItem.name}
+              </Link>
+            </li>
+          )
+        })}
       </ul>
       <div className='my-4 h-[1px] bg-gray-300' />
       <Link to={path.home} className='mt-4 flex items-center font-bold uppercase'>
@@ -69,7 +107,7 @@ function AsideFilter() {
             />
           </g>
         </svg>
-        Bo loc tim kiem
+        Bộ lọc tìm kiếm
       </Link>
       <div className='my-5'>Khoản giá</div>
       <form action='' className='mt-2'>
