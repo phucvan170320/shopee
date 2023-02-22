@@ -14,7 +14,6 @@ interface Props {
 //pageNumber : là số thứ tự trang pageNumber = index + 1
 // range là khoảng cách đầu , cuối và xung quanh current_page (tức là số button xung quanh cái current page)
 const RANGE = 2
-
 function Pagination({ queryConfig, pageSize }: Props) {
   const page = Number(queryConfig.page)
 

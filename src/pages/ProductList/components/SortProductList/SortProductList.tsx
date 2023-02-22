@@ -1,25 +1,134 @@
 import React from 'react'
+import { QueryConfig } from '../../../../hooks/useQueryConfig'
+import { sortBy, order as orderConstant } from '../../../../constants/product'
+import classNames from 'classnames'
+import ProductList from '../../ProductList'
+import { ProductListConfig } from '../../../../types/product.type'
+import { createSearchParams, useNavigate } from 'react-router-dom'
+import path from '../../../../constants/path'
+import { omit } from 'lodash'
 
-function SortProductList() {
+interface Props {
+  queryConfig: QueryConfig
+  pageSize: number
+}
+// type QueryConfig = {
+//   page?: string | undefined
+//   limit?: string | undefined
+//   sort_by?: string | undefined
+//   order?: string | undefined
+//   exclude?: string | undefined
+//   rating_filter?: string | undefined
+//   price_max?: string | undefined
+//   price_min?: string | undefined
+//   name?: string | undefined
+//   category?: string | undefined
+// }
+
+function SortProductList({ queryConfig, pageSize }: Props) {
+  const page = queryConfig.page
+  const { sort_by = sortBy.createdAt, order } = queryConfig
+  console.log('sort_by:', sort_by)
+  const navigate = useNavigate()
+  const isActiveSortBy = (sortByValue: Exclude<ProductListConfig['sort_by'], undefined>) => {
+    return sort_by === sortByValue
+  }
+  const handleSort = (sortByValue: Exclude<ProductListConfig['sort_by'], undefined>) => {
+    navigate({
+      pathname: path.home,
+      search: createSearchParams(
+        omit(
+          {
+            ...queryConfig,
+            sort_by: sortByValue
+          },
+          ['order']
+        )
+      ).toString()
+    })
+  }
+
+  // export interface ProductListConfig {
+  //   page?: number | string
+  //   limit?: number | string
+  //   sort_by?: 'createdAt' | 'view' | 'sold' | 'price'
+  //   order?: 'asc' | 'desc'
+  //   exclude?: string
+  //   rating_filter?: number | string
+  //   price_max?: number | string
+  //   price_min?: number | string
+  //   name?: string
+  //   category?: string
+  // }
+
+  const handlePriceOrder = (orderValue: Exclude<ProductListConfig['order'], undefined>) => {
+    navigate({
+      pathname: path.home,
+      search: createSearchParams({
+        ...queryConfig,
+        sort_by: sortBy.price,
+        order: orderValue
+      }).toString()
+    })
+  }
+
   return (
     <div className=' bg-gray-300/40 py-4 px-3'>
       <div className='flex  flex-wrap items-center justify-between gap-2'>
         <div className='flex flex-wrap items-center gap-2'>
           <div>sắp xếp theo </div>
-          <button className='h-8 bg-orange px-4 text-center text-sm capitalize hover:bg-orange'>Phổ biến </button>
-          <button className='h-8 bg-white px-4 text-center text-sm capitalize hover:bg-orange'>Mới nhất </button>
-          <button className='h-8 bg-white px-4 text-center text-sm capitalize hover:bg-orange'>Bán chạy </button>
-          <select name='' id='' className='h-8 bg-white px-4 capitalize hover:bg-slate-200 '>
+          <button
+            className={classNames('h-8  px-4 text-center text-sm capitalize ', {
+              'bg-orange text-white  hover:bg-orange': isActiveSortBy(sortBy.view),
+              'bg-white text-black hover:bg-slate-100': !isActiveSortBy(sortBy.view)
+            })}
+            onClick={() => handleSort(sortBy.view)}
+          >
+            Phổ biến{' '}
+          </button>
+          <button
+            className={classNames('h-8  px-4 text-center text-sm capitalize ', {
+              'bg-orange text-white  hover:bg-orange': isActiveSortBy(sortBy.createdAt),
+              'bg-white text-black hover:bg-slate-100': !isActiveSortBy(sortBy.createdAt)
+            })}
+            onClick={() => handleSort(sortBy.createdAt)}
+          >
+            Mới nhất{' '}
+          </button>
+          <button
+            className={classNames('h-8  px-4 text-center text-sm capitalize ', {
+              'bg-orange text-white  hover:bg-orange': isActiveSortBy(sortBy.sold),
+              'bg-white text-black hover:bg-slate-100': !isActiveSortBy(sortBy.sold)
+            })}
+            onClick={() => handleSort(sortBy.sold)}
+          >
+            Bán chạy{' '}
+          </button>
+          <select
+            name=''
+            id=''
+            className={classNames('h-8  px-4 text-left text-sm capitalize  outline-none ', {
+              'bg-orange text-white hover:bg-orange/80': isActiveSortBy(sortBy.price),
+              'bg-white text-black hover:bg-slate-100': !isActiveSortBy(sortBy.price)
+            })}
+            value={order || ''}
+            onChange={(event) => handlePriceOrder(event.target.value as Exclude<ProductListConfig['order'], undefined>)}
+          >
             <option value='' disabled>
               Giá
             </option>
-            <option value='price:asc'>Giá Thấp đến cao </option>
-            <option value='price:desc'>Giá cao đến thấp </option>
+            <option value={orderConstant.asc} className='bg-white text-black'>
+              Giá Thấp đến cao{' '}
+            </option>
+            <option value={orderConstant.desc} className='bg-white text-black'>
+              Giá cao đến thấp{' '}
+            </option>
           </select>
         </div>
         <div className='flex  items-center '>
-          <span className='text-orange'>1</span>
-          <span>/9</span>
+          <span className='text-orange'>{page}</span>
+          <span>/</span>
+          <span>{pageSize}</span>
           <div className='ml-2'>
             <button className='cursor-pointer bg-[aqua] px-2 text-orange shadow-sm'>
               <svg
