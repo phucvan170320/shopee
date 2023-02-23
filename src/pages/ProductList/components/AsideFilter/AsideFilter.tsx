@@ -6,11 +6,15 @@ import Input from 'src/components/Input'
 // eslint-disable-next-line import/no-unresolved
 import Button from 'src/components/Button'
 
-import { Schema } from '../../../../utils/rules'
+import { Schema, schema } from '../../../../utils/rules'
 import { QueryConfig } from '../../../../hooks/useQueryConfig'
 import { Category } from '../../../../types/category.type'
 import categoryApi from '../../../../apis/category.api'
 import classNames from 'classnames'
+import { useForm, Controller } from 'react-hook-form'
+import InputNumber from '../../../../components/InputNumber/index'
+import { type } from 'os'
+import { yupResolver } from '@hookform/resolvers/yup'
 
 interface Props {
   queryConfig: QueryConfig
@@ -32,8 +36,44 @@ interface Props {
 //   name?: string | undefined
 //   category?: string | undefined
 // }
+
+// type FormData = NoUndefinedField<Pick<Schema, 'price_max' | 'price_min'>>
+/**
+ * Rule validate
+ * Nếu có price_min và price_max thì price_max >= price_min
+ * Còn không thì có price_min thì không có price_max và ngược lại
+ */
+type FormData = {
+  price_min: string
+  price_max: string
+}
+const priceSchema = schema.pick(['price_min', 'price_max'])
 function AsideFilter({ categories, queryConfig }: Props) {
   const { category } = queryConfig
+  const {
+    control,
+    handleSubmit,
+    watch,
+    formState: { errors }
+  } = useForm<FormData>({
+    defaultValues: {
+      price_max: '',
+      price_min: ''
+    },
+    resolver: yupResolver(priceSchema)
+  })
+  const onSubmit = handleSubmit((data) => {
+    navigate({
+      pathname: path.home,
+      search: createSearchParams({
+        ...queryConfig,
+        price_max: data.price_max,
+        price_min: data.price_min
+      }).toString()
+    })
+  })
+  const valueForm = watch()
+  console.log('valueForm:', valueForm)
   return (
     <div className='mx-1 gap-2 py-5'>
       <Link
@@ -61,8 +101,10 @@ function AsideFilter({ categories, queryConfig }: Props) {
       <ul>
         {categories.map((categoryItem) => {
           const isActive = category === categoryItem._id
-          //category : lấy từ api
-          //categoryItem._id : lấy từ URL
+          // const { category } = queryConfig
+          //category : lấy từ url
+          //categoryItem._id : lấy từ api
+          //mỗi li ứng với một categoryItem._id (index cảu cái map) mỗi khi link vào
           return (
             <li key={categoryItem._id} className='py-2 pl-2'>
               <Link
@@ -110,22 +152,40 @@ function AsideFilter({ categories, queryConfig }: Props) {
         Bộ lọc tìm kiếm
       </Link>
       <div className='my-5'>Khoản giá</div>
-      <form action='' className='mt-2'>
+      <form action='' className='mt-2' onSubmit={onSubmit}>
         <div className='flex items-start '>
-          <Input
-            placeholder='from Đ'
-            type='text'
-            className='grow'
-            name='from'
-            classNameInput='w-full rounded-sm border border-gray-300  p-1 outline-none focus:border-gray-500 focus:shadow-sm'
+          <Controller
+            control={control}
+            name='price_min'
+            render={({ field }) => {
+              return (
+                <InputNumber
+                  placeholder='from Đ'
+                  type='text'
+                  className='grow'
+                  classNameInput='w-full rounded-sm border border-gray-300  p-1 outline-none focus:border-gray-500 focus:shadow-sm'
+                  onChange={(event) => field.onChange(event)}
+                  value={field.value}
+                />
+              )
+            }}
           />
           <div className=' mx-2 mt-2 shrink-0'> --- </div>
-          <Input
-            placeholder='to - Đ'
-            type='text'
-            className='grow'
-            name='from'
-            classNameInput='w-full rounded-sm border border-gray-300  p-1 outline-none focus:border-gray-500 focus:shadow-sm'
+          <Controller
+            control={control}
+            name='price_max'
+            render={({ field }) => {
+              return (
+                <InputNumber
+                  placeholder='to Đ'
+                  type='text'
+                  className='grow'
+                  classNameInput='w-full rounded-sm border border-gray-300  p-1 outline-none focus:border-gray-500 focus:shadow-sm'
+                  onChange={(event) => field.onChange(event)}
+                  value={field.value}
+                />
+              )
+            }}
           />
         </div>
         <Button className='flex w-full items-center justify-center rounded-xl bg-orange p-2 text-sm uppercase text-white hover:bg-[red]'>

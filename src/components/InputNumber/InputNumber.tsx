@@ -1,36 +1,38 @@
-import { log } from 'console'
 import React, { InputHTMLAttributes } from 'react'
-import { RegisterOptions, UseFormRegister } from 'react-hook-form'
-// import { registerAccount } from '../../apis/auth.api'
 
 interface Props extends InputHTMLAttributes<HTMLInputElement> {
   errorMessage?: string
-  register?: UseFormRegister<any>
-  rules?: RegisterOptions
+  // register?: UseFormRegister<any>
+  // rules?: RegisterOptions
   classNameInput?: string
   classNameError?: string
 }
-function Input({
+function InputNumber({
   type,
   // placeholder,
-  name,
   className,
-  register,
-  rules,
   errorMessage,
+  onChange,
   // autoComplete,
   classNameError = 'mt-[0.5rem] min-h-[1.25rem] text-sm font-[900] text-red-900',
   classNameInput = 'w-full rounded-sm border border-gray-300  p-1 outline-none focus:border-gray-500 focus:shadow-sm',
   ...rest
 }: Props) {
-  const registerResult = register && name ? register(name, rules) : {}
-
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = event.target
+    if (/^\d+$/.test(value) || value === '') {
+      // Thực thi onChange callback từ bên ngoài truyền vào props
+      onChange && onChange(event)
+      // Cập nhật localValue state
+      // setLocalValue(value)
+    }
+  }
   return (
     <div className={className}>
       <input
         type={type}
         // {...register('email', rules.email)}
-        {...registerResult}
+        onChange={handleChange}
         className={classNameInput}
         {...rest}
       />
@@ -39,4 +41,4 @@ function Input({
   )
 }
 
-export default Input
+export default InputNumber
