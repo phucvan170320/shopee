@@ -3,7 +3,7 @@ import { Link, useMatch } from 'react-router-dom'
 
 function RegisterHeader() {
   const registerMatch = useMatch('/register')
-  console.log(registerMatch)
+  // console.log(registerMatch)
   const isRegister = Boolean(registerMatch)
   return (
     <header className='py-5 text-[30px] text-red-500'>

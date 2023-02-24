@@ -1,4 +1,4 @@
-import React, { InputHTMLAttributes } from 'react'
+import React, { InputHTMLAttributes, forwardRef } from 'react'
 
 interface Props extends InputHTMLAttributes<HTMLInputElement> {
   errorMessage?: string
@@ -7,7 +7,7 @@ interface Props extends InputHTMLAttributes<HTMLInputElement> {
   classNameInput?: string
   classNameError?: string
 }
-function InputNumber({
+const InputNumber = forwardRef<HTMLInputElement, Props>(function InputNumber({
   type,
   // placeholder,
   className,
@@ -39,6 +39,6 @@ function InputNumber({
       <div className={classNameError}>{errorMessage}</div>
     </div>
   )
-}
+})
 
 export default InputNumber

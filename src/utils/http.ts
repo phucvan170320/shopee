@@ -53,20 +53,20 @@ class Http {
     this.instance.interceptors.response.use(
       (response) => {
         const { url } = response.config
-        console.log(url)
+        // console.log(url)
 
         if (url === path.login || url === path.register) {
           const data = response.data as AuthResponse
           this.accessToken = data.data.access_token
           this.refreshToken = data.data.refresh_token
-          console.log(this.accessToken)
+          // console.log(this.accessToken)
           setAccessTokenToLS(this.accessToken)
           setRefreshTokenToLS(this.refreshToken)
           setProfileToLS(data.data.user)
         } else if (url === path.logout) {
           this.accessToken = ''
           this.refreshToken = ''
-          console.log('helo2')
+          // console.log('helo2')
           clearLS()
         }
         return response
@@ -76,7 +76,7 @@ class Http {
           const data: any | undefined = error.response?.data
           const message = data?.message || error.message
           // toast.error(message)
-          console.log('error:', message)
+          // console.log('error:', message)
         }
         return Promise.reject(error)
       }

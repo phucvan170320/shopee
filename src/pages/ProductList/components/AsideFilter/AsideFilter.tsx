@@ -1,5 +1,5 @@
 import React from 'react'
-import { Link, createSearchParams } from 'react-router-dom'
+import { Link, createSearchParams, useNavigate } from 'react-router-dom'
 import path from '../../../../constants/path'
 // eslint-disable-next-line import/no-unresolved
 import Input from 'src/components/Input'
@@ -62,6 +62,7 @@ function AsideFilter({ categories, queryConfig }: Props) {
     },
     resolver: yupResolver(priceSchema)
   })
+  const navigate = useNavigate()
   const onSubmit = handleSubmit((data) => {
     navigate({
       pathname: path.home,
@@ -73,7 +74,7 @@ function AsideFilter({ categories, queryConfig }: Props) {
     })
   })
   const valueForm = watch()
-  console.log('valueForm:', valueForm)
+  // console.log('valueForm:', valueForm)
   return (
     <div className='mx-1 gap-2 py-5'>
       <Link
@@ -166,6 +167,8 @@ function AsideFilter({ categories, queryConfig }: Props) {
                   classNameInput='w-full rounded-sm border border-gray-300  p-1 outline-none focus:border-gray-500 focus:shadow-sm'
                   onChange={(event) => field.onChange(event)}
                   value={field.value}
+                  ref={field.ref}
+                  classNameError='hidden'
                 />
               )
             }}
@@ -183,11 +186,14 @@ function AsideFilter({ categories, queryConfig }: Props) {
                   classNameInput='w-full rounded-sm border border-gray-300  p-1 outline-none focus:border-gray-500 focus:shadow-sm'
                   onChange={(event) => field.onChange(event)}
                   value={field.value}
+                  classNameError='hidden'
+                  ref={field.ref}
                 />
               )
             }}
           />
         </div>
+        <div className='mt-1 min-h-[1.5rem] text-center text-sm text-red-800'>{errors.price_max?.message}</div>
         <Button className='flex w-full items-center justify-center rounded-xl bg-orange p-2 text-sm uppercase text-white hover:bg-[red]'>
           Áp dụng
         </Button>

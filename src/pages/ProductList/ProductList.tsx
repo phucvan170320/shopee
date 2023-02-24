@@ -35,7 +35,7 @@ function ProductList() {
     },
     keepPreviousData: true
   })
-  console.log('datta:', productsData)
+  // console.log('datta:', productsData)
   // const [page, setPage] = useState(1)
   // export interface Category {
   //   _id: string
@@ -47,7 +47,7 @@ function ProductList() {
       return categoryApi.getCategories()
     }
   })
-  console.log('categoryApi:', categoryData)
+  // console.log('categoryApi:', categoryData)
   return (
     <div className='bg-gray-200 py-6'>
       <div className='container '>

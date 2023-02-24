@@ -25,7 +25,7 @@ export default function useQueryConfig() {
     },
     isUndefined
   )
-  console.log('queryParams:', queryParams)
-  console.log('queryConfig', queryConfig)
+  // console.log('queryParams:', queryParams)
+  // console.log('queryConfig', queryConfig)
   return queryConfig
 }
