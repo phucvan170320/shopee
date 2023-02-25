@@ -4,9 +4,12 @@ import ProductList from './pages/ProductList/ProductList'
 import Login from './pages/Login'
 import Register from './pages/Register'
 import RegisterLayout from './layouts/RegisterLayout'
-import MainLayout from './layouts/MainLayout'
+// import MainLayout from './layouts/MainLayout'
 import Profile from './pages/Profile'
 import { AppContext } from './contexts/app.context'
+import path from './constants/path'
+import MainLayout from './layouts/MainLayout/index'
+import ProductDetail from './components/ProductDetail'
 
 function ProtectedRoute() {
   const { isAuthenticated } = useContext(AppContext)
@@ -41,6 +44,15 @@ export default function useRouteElements() {
           )
         }
       ]
+    },
+    {
+      path: path.productDetail,
+      index: true,
+      element: (
+        <MainLayout>
+          <ProductDetail />
+        </MainLayout>
+      )
     },
     {
       path: '',

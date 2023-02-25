@@ -23,7 +23,8 @@ import Button from '../../components/Button/Button'
 //   confirm_password: string
 //   password: string
 // }
-type FormData = Schema
+type FormData = Pick<Schema, 'email' | 'password' | 'confirm_password'>
+const registerSchema = schema.pick(['email', 'password', 'confirm_password'])
 function Register() {
   const { setIsAuthenticated, setProfile } = useContext(AppContext)
   const navigate = useNavigate()

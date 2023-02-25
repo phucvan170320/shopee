@@ -15,6 +15,9 @@ import { useForm, Controller } from 'react-hook-form'
 import InputNumber from '../../../../components/InputNumber/index'
 import { type } from 'os'
 import { yupResolver } from '@hookform/resolvers/yup'
+import { NoUndefinedField } from '../../../../types/ultil.type'
+import { config } from 'process'
+import RatingStars from '../RatingStars/RatingStars'
 
 interface Props {
   queryConfig: QueryConfig
@@ -37,16 +40,16 @@ interface Props {
 //   category?: string | undefined
 // }
 
-// type FormData = NoUndefinedField<Pick<Schema, 'price_max' | 'price_min'>>
 /**
  * Rule validate
  * Nếu có price_min và price_max thì price_max >= price_min
  * Còn không thì có price_min thì không có price_max và ngược lại
  */
-type FormData = {
-  price_min: string
-  price_max: string
-}
+type FormData = NoUndefinedField<Pick<Schema, 'price_max' | 'price_min'>>
+// type FormData = {
+//   price_min: string
+//   price_max: string
+// }
 const priceSchema = schema.pick(['price_min', 'price_max'])
 function AsideFilter({ categories, queryConfig }: Props) {
   const { category } = queryConfig
@@ -54,6 +57,7 @@ function AsideFilter({ categories, queryConfig }: Props) {
     control,
     handleSubmit,
     watch,
+    trigger,
     formState: { errors }
   } = useForm<FormData>({
     defaultValues: {
@@ -165,10 +169,14 @@ function AsideFilter({ categories, queryConfig }: Props) {
                   type='text'
                   className='grow'
                   classNameInput='w-full rounded-sm border border-gray-300  p-1 outline-none focus:border-gray-500 focus:shadow-sm'
-                  onChange={(event) => field.onChange(event)}
+                  classNameError='hidden'
+                  onChange={(event) => {
+                    trigger('price_max')
+                    field.onChange(event)
+                  }}
                   value={field.value}
                   ref={field.ref}
-                  classNameError='hidden'
+                  // classNameError='hidden'
                 />
               )
             }}
@@ -184,7 +192,10 @@ function AsideFilter({ categories, queryConfig }: Props) {
                   type='text'
                   className='grow'
                   classNameInput='w-full rounded-sm border border-gray-300  p-1 outline-none focus:border-gray-500 focus:shadow-sm'
-                  onChange={(event) => field.onChange(event)}
+                  onChange={(event) => {
+                    trigger('price_min')
+                    field.onChange(event)
+                  }}
                   value={field.value}
                   classNameError='hidden'
                   ref={field.ref}
@@ -193,14 +204,16 @@ function AsideFilter({ categories, queryConfig }: Props) {
             }}
           />
         </div>
-        <div className='mt-1 min-h-[1.5rem] text-center text-sm text-red-800'>{errors.price_max?.message}</div>
+        <div className='my-2 min-h-[1.5rem] text-center text-sm font-bold text-red-800 '>
+          {errors.price_max?.message}
+        </div>
         <Button className='flex w-full items-center justify-center rounded-xl bg-orange p-2 text-sm uppercase text-white hover:bg-[red]'>
           Áp dụng
         </Button>
       </form>
       <div className='my-4 h-[1px] bg-gray-300' />
       <div className='text-sm'>Đánh giá</div>
-      <ul className='my-3'>
+      {/* <ul className='my-3'>
         <li className='py-1 pl-2'>
           <Link to={path.home} className='flex items-center text-sm '>
             {Array(5)
@@ -212,7 +225,8 @@ function AsideFilter({ categories, queryConfig }: Props) {
               ))}
           </Link>
         </li>
-      </ul>
+      </ul> */}
+      <RatingStars queryConfig={queryConfig} />
       <div className='my-4 h-[1px] bg-gray-300' />
       <Button className='w-full rounded-xl bg-orange py-2 px-2 text-sm uppercase text-white hover:bg-[red]'>
         Xóa tất cả

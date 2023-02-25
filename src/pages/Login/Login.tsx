@@ -12,8 +12,8 @@ import { AppContext } from '../../contexts/app.context'
 import Button from '../../components/Button/Button'
 import authApi from '../../apis/auth.api'
 
-type FormData = Omit<Schema, 'confirm_password'>
-const loginschema = schema.omit(['confirm_password'])
+type FormData = Pick<Schema, 'email' | 'password'>
+const loginschema = schema.pick(['email', 'password'])
 
 function Login() {
   const { setIsAuthenticated, setProfile } = useContext(AppContext)
