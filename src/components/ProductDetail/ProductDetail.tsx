@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import productApi from '../../apis/product.api'
 import ProductRating from '../ProductRating'
-import { formatCurrency, formatNumberToSocialStyle, rateSale } from '../../utils/ultils'
+import { formatCurrency, formatNumberToSocialStyle, getIdFromNameId, rateSale } from '../../utils/ultils'
 import InputNumber from '../InputNumber'
 import DOMPurify from 'dompurify'
 import { useState, useMemo, useRef } from 'react'
@@ -12,10 +12,11 @@ import { unset } from 'lodash'
 // DOMPurify
 function ProductDetail() {
   const { nameId } = useParams()
+  const id = getIdFromNameId(nameId as string)
   // const { t } = useTranslation(['product'])
   const { data: productDetailData } = useQuery({
-    queryKey: ['product', nameId],
-    queryFn: () => productApi.getProductDetail(nameId as string)
+    queryKey: ['product', id],
+    queryFn: () => productApi.getProductDetail(id as string)
   })
   const product = productDetailData?.data.data //
   const [currentIndexImages, setCurrentIndexImages] = useState([0, 5]) //
@@ -47,10 +48,11 @@ function ProductDetail() {
       setCurrentIndexImages((prev) => [prev[0] - 1, prev[1] - 1])
     }
   }
-  const imageRef = useRef<HTMLImageElement>(null)
 
   console.log('productDetailData:', productDetailData?.data.data)
   console.log('id:', nameId)
+
+  const imageRef = useRef<HTMLImageElement>(null)
 
   const handleZoom = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     const rect = event.currentTarget.getBoundingClientRect()
@@ -71,6 +73,9 @@ function ProductDetail() {
     image.style.top = top + 'px'
     image.style.left = left + 'px'
   }
+  const handleRemoveZoom = () => {
+    imageRef.current?.removeAttribute('style')
+  }
 
   return (
     <div className=' flex flex-col items-center bg-gray-200 py-6'>
@@ -83,6 +88,7 @@ function ProductDetail() {
                 onMouseMove={(event) => {
                   handleZoom(event)
                 }}
+                onMouseLeave={handleRemoveZoom}
               >
                 <img
                   src={activeImage}
