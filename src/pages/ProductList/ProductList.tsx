@@ -15,6 +15,7 @@ import categoryApi from '../../apis/category.api'
 
 function ProductList() {
   const queryConfig = useQueryConfig()
+
   // type QueryConfig = {
   //   page?: string | undefined
   //   limit?: string | undefined

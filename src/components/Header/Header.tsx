@@ -1,4 +1,4 @@
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, createSearchParams, useNavigate } from 'react-router-dom'
 import Popover from '../Popover/Popover'
 
 import { useMutation } from '@tanstack/react-query'
@@ -7,8 +7,25 @@ import { AppContext } from '../../contexts/app.context'
 import authApi from '../../apis/auth.api'
 import path from '../../constants/path'
 import { profile } from 'console'
+import useQueryConfig from '../../hooks/useQueryConfig'
+import { type } from 'os'
+import { Schema, schema } from '../../utils/rules'
+import { useForm } from 'react-hook-form'
+import { yupResolver } from '@hookform/resolvers/yup'
+import { omit } from 'lodash'
 
+type FormData = Pick<Schema, 'name'>
+const nameSchema = schema.pick(['name'])
 function Header() {
+  const queryConfig = useQueryConfig()
+  const { register, handleSubmit } = useForm<FormData>({
+    defaultValues: {
+      name: ''
+    },
+    resolver: yupResolver(nameSchema)
+  })
+  const navigate = useNavigate()
+
   // const arrowRef = useRef<HTMLElement>(null)
   // const [isOpen, setIsOpen] = useState(false)
 
@@ -24,6 +41,7 @@ function Header() {
   // const hover = useHover(context)
 
   // const { getReferenceProps, getFloatingProps } = useInteractions([hover])
+
   const { setIsAuthenticated, isAuthenticated, setProfile, profile } = useContext(AppContext)
 
   const logoutMutation = useMutation({
@@ -36,6 +54,24 @@ function Header() {
   const handleLogout = () => {
     return logoutMutation.mutate()
   }
+  const onSubmitSearch = handleSubmit((data) => {
+    const config = queryConfig.order
+      ? omit(
+          {
+            ...queryConfig,
+            name: data.name
+          },
+          ['order', 'sort_by']
+        )
+      : {
+          ...queryConfig,
+          name: data.name
+        }
+    navigate({
+      pathname: path.home,
+      search: createSearchParams(config).toString()
+    })
+  })
   return (
     <div className='bg-[linear-gradient(-180deg,#f53d2d,#f63)] pb-5 pt-2 text-white'>
       <div className='container'>
@@ -138,11 +174,11 @@ function Header() {
               </g>
             </svg>
           </Link>
-          <form action='' className='col-span-9'>
+          <form action='' className='col-span-9' onSubmit={onSubmitSearch}>
             <div className='flex rounded-sm bg-white p-1'>
               <input
                 type='text'
-                name='search'
+                {...register('name')}
                 className=' flex-grow border-none bg-transparent px-3 py-2 text-black outline-none'
                 placeholder='MIEN PHI SHIP '
               />
