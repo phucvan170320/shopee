@@ -9,6 +9,7 @@ import DOMPurify from 'dompurify'
 import { useState, useMemo, useRef } from 'react'
 import { Product as ProductType, ProductListConfig } from '../../types/product.type'
 import { unset } from 'lodash'
+import Product from '../../pages/ProductList/components/Product/index'
 // DOMPurify
 function ProductDetail() {
   const { nameId } = useParams()
@@ -19,6 +20,18 @@ function ProductDetail() {
     queryFn: () => productApi.getProductDetail(id as string)
   })
   const product = productDetailData?.data.data //
+
+  const queryConfig: ProductListConfig = { limit: '20', page: '1', category: product?.category._id }
+
+  const { data: productsData } = useQuery({
+    queryKey: ['products', queryConfig],
+    queryFn: () => {
+      return productApi.getProducts(queryConfig)
+    },
+    staleTime: 3 * 60 * 1000,
+    enabled: Boolean(product)
+  })
+  console.log(productsData)
   const [currentIndexImages, setCurrentIndexImages] = useState([0, 5]) //
 
   const [activeImage, setActiveImage] = useState('')
@@ -256,19 +269,35 @@ function ProductDetail() {
         </div>
       </div>
       {product && (
-        <div className='container'>
-          <div className='mt-8 bg-white p-4 shadow'>
-            <div className='rounded bg-gray-50  p-4 text-lg capitalize text-slate-800'>Mô tả sản phẩm</div>
-            <div className='mx-4 mt-12 mb-4 text-sm leading-loose'>
-              <div
-                dangerouslySetInnerHTML={{
-                  __html: DOMPurify.sanitize(product.description)
-                }}
-              ></div>
+        <div className='mt-8'>
+          <div className='container'>
+            <div className=' bg-white p-4 shadow'>
+              <div className='rounded bg-gray-50 p-4 text-lg capitalize text-slate-700'>Mô tả sản phẩm</div>
+              <div className='mx-4 mt-12 mb-4 text-sm leading-loose'>
+                <div
+                  dangerouslySetInnerHTML={{
+                    __html: DOMPurify.sanitize(product.description)
+                  }}
+                />
+              </div>
             </div>
           </div>
         </div>
       )}
+      <div className='mt-8'>
+        <div className='container'>
+          <div className='uppercase text-gray-400'>CÓ THỂ BẠN CŨNG THÍCH</div>
+          {productsData && (
+            <div className='mt-6 grid grid-cols-2 gap-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6'>
+              {productsData.data.data.products.map((product) => (
+                <div className='col-span-1' key={product._id}>
+                  <Product product={product} />
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
     </div>
   )
 }

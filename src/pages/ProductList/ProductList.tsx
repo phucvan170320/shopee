@@ -34,7 +34,8 @@ function ProductList() {
     queryFn: () => {
       return productApi.getProducts(queryConfig as ProductListConfig)
     },
-    keepPreviousData: true
+    keepPreviousData: true,
+    staleTime: 3 * 60 * 1000
   })
   // console.log('datta:', productsData)
   // const [page, setPage] = useState(1)
