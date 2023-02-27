@@ -197,7 +197,7 @@ function AsideFilter({ categories, queryConfig }: Props) {
                     field.onChange(event)
                   }}
                   value={field.value}
-                  classNameError='hidden'
+                  classNameError='hidden '
                   ref={field.ref}
                 />
               )

@@ -1,14 +1,14 @@
 import React, { InputHTMLAttributes, forwardRef } from 'react'
 import { ref } from 'yup'
 
-interface Props extends InputHTMLAttributes<HTMLInputElement> {
+export interface InputNumberProps extends InputHTMLAttributes<HTMLInputElement> {
   errorMessage?: string
   // register?: UseFormRegister<any>
   // rules?: RegisterOptions
   classNameInput?: string
   classNameError?: string
 }
-const InputNumber = forwardRef<HTMLInputElement, Props>(function InputNumber(
+const InputNumber = forwardRef<HTMLInputElement, InputNumberProps>(function InputNumber(
   {
     type,
     // placeholder,
@@ -17,7 +17,7 @@ const InputNumber = forwardRef<HTMLInputElement, Props>(function InputNumber(
     onChange,
 
     // autoComplete,
-    classNameError = 'mt-[0.5rem] min-h-[1.25rem] text-sm font-[900] text-red-900',
+    classNameError = 'mt-[0.5rem] min-h-[1.25rem] text-sm font-[900] text-red-900 ',
     classNameInput = 'w-full rounded-sm border border-gray-300  p-1 outline-none focus:border-gray-500 focus:shadow-sm',
     ...rest
   },
