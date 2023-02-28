@@ -1,7 +1,7 @@
 import { Link, createSearchParams, useNavigate } from 'react-router-dom'
 import Popover from '../Popover/Popover'
 
-import { useMutation, useQuery } from '@tanstack/react-query'
+import { QueryClient, useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useContext } from 'react'
 import { AppContext } from '../../contexts/app.context'
 import authApi from '../../apis/auth.api'
@@ -44,16 +44,10 @@ function Header() {
   // const hover = useHover(context)
 
   // const { getReferenceProps, getFloatingProps } = useInteractions([hover])
+  const queryClient = useQueryClient()
 
   const { setIsAuthenticated, isAuthenticated, setProfile, profile } = useContext(AppContext)
 
-  const logoutMutation = useMutation({
-    mutationFn: authApi.logout,
-    onSuccess: () => {
-      setIsAuthenticated(false)
-      setProfile(null)
-    }
-  })
   const handleLogout = () => {
     return logoutMutation.mutate()
   }
@@ -82,6 +76,14 @@ function Header() {
     enabled: isAuthenticated
   })
 
+  const logoutMutation = useMutation({
+    mutationFn: authApi.logout,
+    onSuccess: () => {
+      setIsAuthenticated(false)
+      setProfile(null)
+      queryClient.removeQueries({ queryKey: ['purchases', { status: purchasesStatus.inCart }] })
+    }
+  })
   const purchasesInCart = purchasesInCartData?.data.data
 
   return (
