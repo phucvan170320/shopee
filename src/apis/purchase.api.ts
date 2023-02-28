@@ -1,6 +1,7 @@
-import { Purchase, PurchaseListStatus } from 'src/types/purchase.type'
-import { SuccessResponse } from 'src/types/utils.type'
-import http from 'src/utils/http'
+import { Purchase, PurchaseListStatus } from '../../src/types/purchase.type'
+
+import { SuccessResponse } from '../../src/types/ultil.type'
+import http from '../../src/utils/http'
 
 const URL = 'purchases'
 

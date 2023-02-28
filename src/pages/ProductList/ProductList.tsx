@@ -49,7 +49,7 @@ function ProductList() {
       return categoryApi.getCategories()
     }
   })
-  // console.log('categoryApi:', categoryData)
+  console.log('categoryApi:', categoryData)
   return (
     <div className='bg-gray-200 py-6'>
       <div className='container '>

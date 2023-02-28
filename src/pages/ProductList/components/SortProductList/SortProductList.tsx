@@ -27,6 +27,7 @@ interface Props {
 
 function SortProductList({ queryConfig, pageSize }: Props) {
   const page = Number(queryConfig.page)
+  // console.log(page)
   const { sort_by = sortBy.createdAt, order } = queryConfig
   // console.log('sort_by:', sort_by)
   const navigate = useNavigate()

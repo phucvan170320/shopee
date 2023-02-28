@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import { useParams } from 'react-router-dom'
-import { useQuery } from '@tanstack/react-query'
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import productApi from '../../apis/product.api'
 import ProductRating from '../ProductRating'
 import { formatCurrency, formatNumberToSocialStyle, getIdFromNameId, rateSale } from '../../utils/ultils'
@@ -11,13 +11,16 @@ import { Product as ProductType, ProductListConfig } from '../../types/product.t
 import { unset } from 'lodash'
 import Product from '../../pages/ProductList/components/Product/index'
 import QuantityController from '../QuantityController'
+import purchaseApi from '../../apis/purchase.api'
+import { toast } from 'react-toastify'
+import { purchasesStatus } from '../../constants/purchase'
 // DOMPurify
 function ProductDetail() {
   const [buyCount, setBuyCount] = useState(1)
   const handleBuyCount = (value: number) => {
     setBuyCount(value)
   }
-
+  const queryClient = useQueryClient()
   const { nameId } = useParams()
   const id = getIdFromNameId(nameId as string)
   // const { t } = useTranslation(['product'])
@@ -96,6 +99,18 @@ function ProductDetail() {
     imageRef.current?.removeAttribute('style')
   }
 
+  const addToCartMutation = useMutation(purchaseApi.addToCart)
+  const addToCart = () => {
+    addToCartMutation.mutate(
+      { buy_count: buyCount, product_id: product?._id as string },
+      {
+        onSuccess: (data) => {
+          toast.success(data.data.message, { autoClose: 1000 })
+          queryClient.invalidateQueries({ queryKey: ['purchases', { status: purchasesStatus.inCart }] })
+        }
+      }
+    )
+  }
   return (
     <div className=' flex flex-col items-center bg-gray-200 py-6'>
       <div className='container'>
@@ -201,7 +216,7 @@ function ProductDetail() {
                 </div>
                 <div className='mt-8 flex items-center '>
                   <button
-                    // onClick={addToCart}
+                    onClick={addToCart}
                     className='flex h-12 items-center justify-center rounded-sm border border-orange bg-orange/10 px-5 capitalize text-orange shadow-sm hover:bg-orange/5'
                   >
                     <svg
