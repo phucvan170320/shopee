@@ -22,6 +22,7 @@ function ProductDetail() {
   }
   const queryClient = useQueryClient()
   const { nameId } = useParams()
+
   const id = getIdFromNameId(nameId as string)
   // const { t } = useTranslation(['product'])
   const { data: productDetailData } = useQuery({

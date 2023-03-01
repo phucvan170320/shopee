@@ -12,6 +12,7 @@ import useQueryConfig from '../../hooks/useQueryConfig'
 import { ProductListConfig } from '../../types/product.type'
 // import SortProductList from './components/SortProductList/SortProductList'
 import categoryApi from '../../apis/category.api'
+import { useParams } from 'react-router-dom'
 
 function ProductList() {
   const queryConfig = useQueryConfig()
@@ -49,7 +50,10 @@ function ProductList() {
       return categoryApi.getCategories()
     }
   })
-  console.log('categoryApi:', categoryData)
+
+  // const param = useParams()
+  // console.log('param:', param)
+  // console.log('categoryApi:', categoryData)
   return (
     <div className='bg-gray-200 py-6'>
       <div className='container '>
