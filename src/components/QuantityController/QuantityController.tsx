@@ -20,7 +20,7 @@ export default function QuantityController({
   value,
   ...rest
 }: Props) {
-  const [localValue, setLocalValue] = useState<number>(Number(value || 0))   //
+  const [localValue, setLocalValue] = useState<number>(Number(value || 0)) //
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     let _value = Number(event.target.value)
     if (max !== undefined && _value > max) {
@@ -51,7 +51,7 @@ export default function QuantityController({
   }
 
   const handleBlur = (event: React.FocusEvent<HTMLInputElement, Element>) => {
-    onFocusOut && onFocusOut(Number(event.target.value))
+    onFocusOut && onFocusOut(Number(event.target.value)) //
   }
 
   return (
@@ -76,7 +76,7 @@ export default function QuantityController({
         classNameError='hidden'
         classNameInput='h-8 w-14 border-t border-b border-gray-300 p-1 text-center outline-none'
         onChange={handleChange}
-        onBlur={handleBlur}
+        onBlur={handleBlur} //
         value={value || localValue} //
         {...rest}
       />
