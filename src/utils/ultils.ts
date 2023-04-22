@@ -2,6 +2,7 @@ import axios, { AxiosError, HttpStatusCode } from 'axios'
 
 // hàm này nói về khi isAxiosError chạy thì error nó sẽ biến thnafh kiểu AxiosError<T>
 export function isAxiosError<T>(error: unknown): error is AxiosError<T> {
+  // eslint-disable-next-line import/no-named-as-default-member
   return axios.isAxiosError(error)
 }
 

@@ -78,6 +78,7 @@ function SortProductList({ queryConfig, pageSize }: Props) {
       <div className='flex  flex-wrap items-center justify-between gap-2'>
         <div className='flex flex-wrap items-center gap-2'>
           <div>sắp xếp theo </div>
+          {/* phổ biến */}
           <button
             className={classNames('h-8  px-4 text-center text-sm capitalize ', {
               'bg-orange text-white  hover:bg-orange': isActiveSortBy(sortBy.view),
@@ -87,6 +88,7 @@ function SortProductList({ queryConfig, pageSize }: Props) {
           >
             Phổ biến{' '}
           </button>
+          {/* Mới nhất */}
           <button
             className={classNames('h-8  px-4 text-center text-sm capitalize ', {
               'bg-orange text-white  hover:bg-orange': isActiveSortBy(sortBy.createdAt),
@@ -96,6 +98,7 @@ function SortProductList({ queryConfig, pageSize }: Props) {
           >
             Mới nhất{' '}
           </button>
+          {/* Bán chạy */}
           <button
             className={classNames('h-8  px-4 text-center text-sm capitalize ', {
               'bg-orange text-white  hover:bg-orange': isActiveSortBy(sortBy.sold),
@@ -105,6 +108,7 @@ function SortProductList({ queryConfig, pageSize }: Props) {
           >
             Bán chạy{' '}
           </button>
+          {/* Giá cả */}
           <select
             name=''
             id=''

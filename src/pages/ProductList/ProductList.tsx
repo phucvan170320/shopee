@@ -16,7 +16,7 @@ import { useParams } from 'react-router-dom'
 
 function ProductList() {
   const queryConfig = useQueryConfig()
-
+  // console.log(queryConfig)
   // type QueryConfig = {
   //   page?: string | undefined
   //   limit?: string | undefined

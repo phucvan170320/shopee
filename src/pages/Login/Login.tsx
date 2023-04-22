@@ -81,7 +81,7 @@ function Login() {
                       name='email'
                       type={'email'}
                       autoComplete='on'
-                      className='mt-8'
+                      className='mt-8 '
                       placeholder='Email'
                       errorMessage={errors.email?.message}
                       register={register}

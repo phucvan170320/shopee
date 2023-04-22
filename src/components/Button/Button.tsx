@@ -3,6 +3,7 @@ import React, { ButtonHTMLAttributes } from 'react'
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   isLoading?: boolean
 }
+
 function Button(props: ButtonProps) {
   const { className, isLoading, children, disabled, ...rest } = props
   const newClassName = disabled ? className + 'cursor-not-allowed' : className
